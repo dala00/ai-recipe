@@ -73,6 +73,9 @@ export default function BattlePage() {
           <Text mt={4} whiteSpace="pre-wrap" wordBreak="break-word">
             {recipe.recipe}
           </Text>
+          <Text mt={4} fontSize={12} color="gray.500">
+            ※ AIが生成しているため正しくない情報の場合があります
+          </Text>
           <Box mt={8} textAlign="center">
             <a href={shareUrl} target="_blank" rel="nofollow noopener">
               <Button type="button" colorScheme="twitter">
