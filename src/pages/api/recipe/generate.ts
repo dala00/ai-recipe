@@ -11,6 +11,11 @@ export default async function battle(
 ) {
   const { ingredients } = req.body as GenerateRecipeRequestData
 
+  const fixedIngredients = ingredients
+    .split(/\n/)
+    .filter((row) => row.trim() !== '')
+    .join('\n')
+
   const openai = new OpenAIApi(
     new Configuration({
       apiKey: process.env.OPENAI_API_KEY,
@@ -27,7 +32,7 @@ export default async function battle(
       },
       {
         role: ChatCompletionRequestMessageRoleEnum.System,
-        content: ingredients.join('\n'),
+        content: fixedIngredients,
       },
     ],
   })
@@ -36,8 +41,8 @@ export default async function battle(
 
   const recipe = await prisma.recipe.create({
     data: {
-      ingredients,
-      recipe: response.data.choices[0].message?.content || '',
+      ingredients: fixedIngredients,
+      recipe: result.message?.content || '',
     },
   })
 

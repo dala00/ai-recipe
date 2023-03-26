@@ -2,8 +2,10 @@ import Head from 'next/head'
 import {
   Box,
   Button,
+  Center,
   Container,
   Heading,
+  Image,
   Spinner,
   Text,
   Textarea,
@@ -25,7 +27,7 @@ export default function Home() {
       setIsSending(true)
 
       const data: GenerateRecipeRequestData = {
-        ingredients: ingredients.split(/\n/),
+        ingredients,
       }
 
       const response = await axios
@@ -50,10 +52,12 @@ export default function Home() {
   return (
     <>
       <Container>
-        <Heading>AIレシピジェネレータ</Heading>
         <Text mt={4}>
           余った食材を入力してAIにレシピを提案してもらいましょう。
         </Text>
+        <Center>
+          <Image src="/images/takuhai_yasai_box.png" alt="" maxHeight={40} />
+        </Center>
         <Box mt={4}>
           <form onSubmit={create}>
             <Box>食材を改行区切りで入力してください</Box>
@@ -61,6 +65,7 @@ export default function Home() {
               <Textarea
                 value={ingredients}
                 rows={8}
+                placeholder={'じゃがいも\n人参\nカレールー'}
                 onChange={(e) => setIngredients(e.target.value)}
               />
             </Box>

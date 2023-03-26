@@ -9,8 +9,8 @@ generator client {
 
 model Recipe {
     id          String   @id @default(uuid())
-    ingredients Json
-    recipe      String
+    ingredients String   @db.Text
+    recipe      String   @db.Text
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 }
