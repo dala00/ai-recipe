@@ -1,0 +1,16 @@
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Recipe {
+    id          String   @id @default(uuid())
+    ingredients Json
+    recipe      String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
