@@ -1,10 +1,8 @@
-import Head from 'next/head'
 import {
   Box,
   Button,
   Center,
   Container,
-  Heading,
   Image,
   Spinner,
   Text,
@@ -44,7 +42,7 @@ export default function Home() {
         return
       }
 
-      router.push(`/repice/${response.data.recipe.id}`)
+      router.push(`/recipe/${response.data.recipe.id}`)
     },
     [ingredients]
   )

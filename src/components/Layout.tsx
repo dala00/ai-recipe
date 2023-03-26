@@ -10,7 +10,8 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   const title = 'AIレシピジェネレータ'
-  const description = '余った食材からAIがレシピを考えてくれるサービスです。'
+  const description =
+    '余った食材からChatGPTのAIがレシピを考えてくれるサービスです。'
 
   return (
     <>

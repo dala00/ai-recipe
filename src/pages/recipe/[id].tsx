@@ -13,8 +13,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { Recipe } from '@prisma/client'
-import Link from 'next/link'
 import { GetRecipeResponseData } from '@/types/response/recipe'
+import Link from 'next/link'
 
 type Query = {
   id: string
@@ -23,16 +23,18 @@ type Query = {
 export default function BattlePage() {
   const router = useRouter()
   const { id } = router.query as Query
-  const [characterId, setCharacterId] = useState('')
   const [recipe, setRecipe] = useState<Recipe>()
   const shareUrl = useMemo(() => {
     if (typeof window === 'undefined') {
       return ''
     }
-    const url = `https://${location.hostname}/battle/${id}`
+    const text = recipe?.ingredients.replace(/\n/g, ',') + 'で作れるレシピは…？'
+    const url = `https://${location.hostname}/recipe/${id}`
     return `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       url
-    )}&hashtags=${encodeURIComponent('AIバトラー')}`
+    )}&text=${encodeURIComponent(text)}&hashtags=${encodeURIComponent(
+      'AIレシピジェネレータ'
+    )}`
   }, [id, typeof window])
 
   const initialize = useCallback(async () => {
@@ -59,70 +61,33 @@ export default function BattlePage() {
 
   return (
     <Container>
-      {id ? (
+      {recipe ? (
         <>
-          <Heading textAlign="center" my={8}>
-            この相手と対戦する！
+          <Heading size="md">指定した食材</Heading>
+          <Text mt={4} whiteSpace="pre-wrap" wordBreak="break-word">
+            {recipe.ingredients}
+          </Text>
+          <Heading size="md" mt={8}>
+            レシピ
           </Heading>
-          <Box borderWidth={2} borderColor="gray.400" p={4} borderRadius={4}>
-            <Box>
-              攻撃力: {targetCharacter.power}
-              <br />
-              防御力: {targetCharacter.guard}
-              <br />
-              魔力: {targetCharacter.magicPower}
-              <br />
-              魔法防御力: {targetCharacter.magicGuard}
-              <br />
-              素早さ: {targetCharacter.speed}
-            </Box>
-            <Box mt={4} whiteSpace="pre-wrap" wordBreak="break-word">
-              {targetCharacter.skill}
-            </Box>
-          </Box>
-          <Box textAlign="center" mt={8}>
-            {isSending ? (
-              <Center>
-                <Spinner />
-              </Center>
-            ) : (
-              <Button type="button" colorScheme="blue" onClick={() => battle()}>
-                対戦する！
+          <Text mt={4} whiteSpace="pre-wrap" wordBreak="break-word">
+            {recipe.recipe}
+          </Text>
+          <Box mt={8} textAlign="center">
+            <a href={shareUrl} target="_blank" rel="nofollow noopener">
+              <Button type="button" colorScheme="twitter">
+                このレシピをTwitterでシェア
               </Button>
-            )}
+            </a>
           </Box>
-          {battleResult && (
-            <Box>
-              <Box textAlign="center">
-                {/* https://gakujo.info/sozaishu/make */}
-                <Image
-                  src={
-                    battleResult.isWin
-                      ? '/images/kachi.png'
-                      : '/images/make.png'
-                  }
-                  alt=""
-                />
-              </Box>
-              <Text whiteSpace="pre-wrap" wordBreak="break-word">
-                {battleResult.details}
-              </Text>
-              <Box mt={6} textAlign="center">
-                <Link href="/battle">
-                  <Button type="button" colorScheme="teal">
-                    他の相手を探す
-                  </Button>
-                </Link>
-              </Box>
-              <Box mt={4} textAlign="center">
-                <a href={shareUrl} target="_blank">
-                  <Button type="button" colorScheme="twitter">
-                    この対戦相手をTwitterでみんなに教える
-                  </Button>
-                </a>
-              </Box>
-            </Box>
-          )}
+          <Center mt={8}>
+            <Image src="/images/takuhai_yasai_box.png" alt="" maxHeight={40} />
+          </Center>
+          <Box mt={4} textAlign="center">
+            <Link href="/">
+              <Box textDecoration="underline">他の食材も試す</Box>
+            </Link>
+          </Box>
         </>
       ) : (
         <Center>
