@@ -11,45 +11,33 @@ import {
 } from '@chakra-ui/react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
-import { GetCharacterResponseData } from '@/types/response/character'
 import { useRouter } from 'next/router'
-import { Character } from '@prisma/client'
-import { BattleResponseData } from '@/types/response/recipe'
+import { Recipe } from '@prisma/client'
 import Link from 'next/link'
-
-const characterIdKey = 'characterId'
+import { GetRecipeResponseData } from '@/types/response/recipe'
 
 type Query = {
-  targetCharacterId: string
+  id: string
 }
 
 export default function BattlePage() {
   const router = useRouter()
-  const { targetCharacterId } = router.query as Query
+  const { id } = router.query as Query
   const [characterId, setCharacterId] = useState('')
-  const [character, setCharacter] = useState<Character>()
-  const [targetCharacter, setTargetCharacter] = useState<Character>()
-  const [battleResult, setBattleResult] = useState<BattleResponseData>()
-  const [isSending, setIsSending] = useState(false)
+  const [recipe, setRecipe] = useState<Recipe>()
   const shareUrl = useMemo(() => {
     if (typeof window === 'undefined') {
       return ''
     }
-    const url = `https://${location.hostname}/battle/${targetCharacterId}`
+    const url = `https://${location.hostname}/battle/${id}`
     return `https://twitter.com/intent/tweet?url=${encodeURIComponent(
       url
     )}&hashtags=${encodeURIComponent('AIバトラー')}`
-  }, [targetCharacterId, typeof window])
+  }, [id, typeof window])
 
   const initialize = useCallback(async () => {
-    const storedCharacterId = localStorage.getItem(characterIdKey)
-    if (!storedCharacterId) {
-      router.push('/')
-      return
-    }
-
     const response = await axios
-      .get<GetCharacterResponseData>(`/api/character/${storedCharacterId}`)
+      .get<GetRecipeResponseData>(`/api/recipe/${id}`)
       .catch((error) => {
         console.error(error)
         return null
@@ -59,59 +47,19 @@ export default function BattlePage() {
       return
     }
 
-    setCharacterId(response.data.character.id)
-    setCharacter(response.data.character)
-
-    await loadTargetCharacter(targetCharacterId)
-  }, [targetCharacterId])
+    setRecipe(response.data.recipe)
+  }, [id])
 
   useEffect(() => {
-    if (!targetCharacterId) {
+    if (!id) {
       return
     }
     initialize()
-  }, [targetCharacterId])
-
-  const loadTargetCharacter = useCallback(async (loadCharacterId: string) => {
-    const response = await axios
-      .get<GetCharacterResponseData>(`/api/character/${loadCharacterId}`)
-      .catch((error) => {
-        console.error(error)
-        return null
-      })
-    if (!response) {
-      router.push('/')
-      return
-    }
-
-    setTargetCharacter(response.data.character)
-  }, [])
-
-  const battle = useCallback(async () => {
-    setIsSending(true)
-    setBattleResult(undefined)
-    const response = await axios
-      .post<BattleResponseData>('/api/battle', {
-        myCharacterId: characterId,
-        yourCharacterId: targetCharacterId,
-      })
-      .catch((error) => {
-        console.error(error)
-        return null
-      })
-    setIsSending(false)
-
-    if (!response) {
-      alert('エラーが発生しました。')
-      return
-    }
-
-    setBattleResult(response.data)
-  }, [characterId, targetCharacterId])
+  }, [id])
 
   return (
     <Container>
-      {targetCharacter ? (
+      {id ? (
         <>
           <Heading textAlign="center" my={8}>
             この相手と対戦する！

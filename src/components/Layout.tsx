@@ -9,9 +9,8 @@ type Props = {
 }
 
 export default function Layout({ children }: Props) {
-  const title = 'AIバトラー'
-  const description =
-    '作ったキャラをChatGPTのAIジャッジに判定してもらって戦わせるゲーム'
+  const title = 'AIレシピジェネレータ'
+  const description = '余った食材からAIがレシピを考えてくれるサービスです。'
 
   return (
     <>
@@ -23,7 +22,7 @@ export default function Layout({ children }: Props) {
         <meta property="og:description" content={description} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Script
+      {/* <Script
         id="gtm"
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
@@ -35,7 +34,7 @@ export default function Layout({ children }: Props) {
       })(window,document,'script','dataLayer','GTM-M8DFDZV');
       `,
         }}
-      />
+      /> */}
       <Box display="flex" flexDirection="column" minHeight="100vh">
         <Box
           flexGrow={0}
@@ -45,7 +44,7 @@ export default function Layout({ children }: Props) {
           mb={4}
           fontWeight="bold"
         >
-          <Link href="/">AIバトラー</Link>
+          <Link href="/">{title}</Link>
         </Box>
         <Box flexGrow={1}>{children}</Box>
         <Box flexGrow={0} textAlign="center" background="gray.300" p={4} mt={6}>
