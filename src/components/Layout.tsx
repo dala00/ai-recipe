@@ -1,7 +1,6 @@
 import { Box, Center } from '@chakra-ui/react'
 import Head from 'next/head'
 import Link from 'next/link'
-import Script from 'next/script'
 import { ReactNode } from 'react'
 
 type Props = {
@@ -27,19 +26,6 @@ export default function Layout({ children }: Props) {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Script
-        id="gtm"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer','GTM-W9VCV5H');
-      `,
-        }}
-      />
       <Box display="flex" flexDirection="column" minHeight="100vh">
         <Box
           flexGrow={0}
